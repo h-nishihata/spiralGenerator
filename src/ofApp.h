@@ -1,5 +1,6 @@
 // Based on:
 // http://openprocessing.org/sketch/10433
+// https://github.com/chimanaco/ofStudies/tree/master/019_fibonacci2D
 
 #pragma once
 
@@ -11,8 +12,8 @@ public:
     void setup();
     void update();
     void draw();
-    void drawReset();
-    void calculatePoint(float x, float y, float r, float graden);
+    void clearScreen();
+    void calculatePoint(float x, float y, float r, float graden, float posY);
 
     void keyPressed(int key);
     void keyReleased(int key);
@@ -28,42 +29,24 @@ public:
     ofParameter<float> speed;
     ofParameter<float> spacing;
     ofParameter<float> radius;
-    ofParameter<float> alpha;
-    ofParameter<float> red;
-    ofParameter<float> green;
-    ofParameter<float> blue;
     ofParameter<float> weight;
-    ofParameter<bool> bLine;
-    ofParameter<bool> bCircle;
-    ofParameter<bool> bFilled;
-    ofParameter<bool> bColor;
-    ofParameter<bool> bWeightNoise;
-    ofParameter<bool> bRadiusNoise;
-    ofParameter<bool> bRedNoise;
-    ofParameter<bool> bGreenNoise;
-    ofParameter<bool> bBlueNoise;
 
-    float px;
-    float py;
+    int width;
+    int height;
+    float centerX;
+    float centerY;
+
     float r;
     float degree;
     float guldenSnede;
+
     float lastX;
     float lastY;
-    int w;
-    int h;
-    float frameCount;
+
     float minSpeed;
     float maxSpeed;
     float minSpacing;
     float maxSpacing;
-    float minRadius;
-    float maxRadius;
-    float minAlpha;
-    float maxAlpha;
-    float minWeight;
-    float maxWeight;
 
-    bool pause;
     float yrad = 0.25;
 };

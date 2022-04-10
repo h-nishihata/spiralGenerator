@@ -1,99 +1,90 @@
 #include "ofApp.h"
 #include <cmath>
-
+float prevSpeed;
+float prevSpacing;
+float prevWeight;
 //--------------------------------------------------------------
 void ofApp::setup() {
     ofSetBackgroundAuto(false);
     ofBackground(255);
     ofEnableAlphaBlending();
-    ofSetCircleResolution(100);
 
     guldenSnede = ((sqrt(5) - 1) / 2);
     lastX = 0;
     lastY = 0;
 
-    w = ofGetWidth();
-    h = ofGetHeight();
+    width = ofGetWidth();
+    height = ofGetHeight();
 
-    frameCount = 0;
+    centerX = width * 0.5;
+    centerY = height * 0.5;
 
-    px = w / 2;
-    py = h / 2;
-
-    minSpeed = 3;
-    maxSpeed = 40;
+    minSpeed = 0;
+    maxSpeed = 0.1;
     minSpacing = 5;
     maxSpacing = 1024;
-    minRadius = 3;
-    maxRadius = 100;
-    minAlpha = 50;
-    maxAlpha = 200;
-    minWeight = 1;
-    maxWeight = 20;
 
-    // Setup GUI
-    gui.setup("panel"); // most of the time you don't need a name but don't forget to call setup
-
+    gui.setup("");
     gui.add(speed.set("speed", 0.02, minSpeed, maxSpeed));
     gui.add(spacing.set("spacing", 128, minSpacing, maxSpacing));
-    //gui.add(radius.set("radius", 128, minRadius, maxRadius));
-    gui.add(weight.set("weight", 1, minWeight, maxWeight));
-    gui.add(bFilled.set("bFilled", false));
-    gui.add(bLine.set("bLine", true));
-    gui.add(bWeightNoise.set("bWeightNoise", false));
-    gui.add(bRadiusNoise.set("bRadiusNoise", false));
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-
-
+    if (prevSpeed != speed || prevSpacing != spacing)
+    {
+        clearScreen();
+        prevSpeed = speed;
+        prevSpacing = spacing;
+    }
 }
 
 //--------------------------------------------------------------
-void ofApp::draw() {    
+void ofApp::draw() {
+
     ofSetColor(0);
-    // line weight
-    //if (bWeightNoise) {
-    //    weight = ofNoise(t * 0.001) * maxWeight;
-    //}
     glLineWidth(weight);
 
-    // line weight
- /*   if (bRadiusNoise) {
-        radius = ofNoise(t * 0.0015) * (maxRadius - minRadius) + minRadius;
-    }*/
     //string date = ofGetTimestampString("%y%m%d");
     //ofBeginSaveScreenAsSVG(date + ".svg");
-    for (frameCount = 0; frameCount < 5000; frameCount++)
+    for (float frameCount = 0; frameCount < 5000; frameCount++)
     {
         float t = frameCount * speed;
+        float posY = abs(frameCount - 2500) * 0.05;
 
-        lastX = px;
-        lastY = py;
+        lastX = centerX;
+        lastY = centerY;
 
         degree = (t * guldenSnede) * 360;
+        
         r = sqrt(t) * spacing;
-        if (yrad < 0.5)
-         yrad += 0.01;
-        calculatePoint(w / 2, h / 2, 1440 - r, fmod(degree, 360));
+        yrad = ofMap(frameCount, 0, 5000, 0.5, 0.2);
+        calculatePoint(width * 0.5, height * 0.5, 1440 - r, fmod(degree, 360), posY);
 
-        if (bLine && frameCount != 0)
-            ofLine(lastX, lastY, px, py);
+        if (frameCount != 0)
+            ofLine(lastX, lastY, centerX, centerY);
     }
     //ofEndSaveScreenAsSVG();
-    //gui.draw();
+
+    gui.draw();
 }
 
 //--------------------------------------------------------------
-void ofApp::calculatePoint(float x, float y, float r, float graden) {
-    px = x + cos(ofDegToRad(graden)) * (r * 0.5);
-    py = y + sin(ofDegToRad(graden)) * (r * yrad);
+void ofApp::calculatePoint(float x, float y, float r, float graden, float posY) {
+    centerX = x + cos(ofDegToRad(graden)) * (r * 0.5);
+    centerY = y + sin(ofDegToRad(graden)) * (r * yrad);// -posY;
+}
+
+//--------------------------------------------------------------
+void ofApp::clearScreen() {
+    ofSetColor(255);
+    ofFill();
+    ofRect(0, 0, width, height);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-    pause = !pause;
+    
 }
 
 //--------------------------------------------------------------
@@ -113,7 +104,7 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-
+    
 }
 
 //--------------------------------------------------------------
