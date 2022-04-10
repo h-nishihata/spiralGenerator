@@ -28,13 +28,18 @@ public:
     ofxPanel gui;
     ofParameter<float> speed;
     ofParameter<float> spacing;
-    ofParameter<float> radius;
-    ofParameter<float> weight;
+    ofParameter<float> count;
+    ofParameter<bool> yNoise;
+
+    float prevSpeed;
+    float prevSpacing;
+    float prevCount;
+    bool prevNoise;
 
     int width;
     int height;
-    float centerX;
-    float centerY;
+    float curPosX;
+    float curPosY;
 
     float r;
     float degree;
@@ -43,10 +48,5 @@ public:
     float lastX;
     float lastY;
 
-    float minSpeed;
-    float maxSpeed;
-    float minSpacing;
-    float maxSpacing;
-
-    float yrad = 0.25;
+    float radY = 0.25;
 };

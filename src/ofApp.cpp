@@ -1,8 +1,5 @@
 #include "ofApp.h"
 #include <cmath>
-float prevSpeed;
-float prevSpacing;
-float prevWeight;
 //--------------------------------------------------------------
 void ofApp::setup() {
     ofSetBackgroundAuto(false);
@@ -16,26 +13,25 @@ void ofApp::setup() {
     width = ofGetWidth();
     height = ofGetHeight();
 
-    centerX = width * 0.5;
-    centerY = height * 0.5;
-
-    minSpeed = 0;
-    maxSpeed = 0.1;
-    minSpacing = 5;
-    maxSpacing = 1024;
+    curPosX = width * 0.5;
+    curPosY = height * 0.5;
 
     gui.setup("");
-    gui.add(speed.set("speed", 0.02, minSpeed, maxSpeed));
-    gui.add(spacing.set("spacing", 128, minSpacing, maxSpacing));
+    gui.add(speed.set("speed", 0.02, 0, 0.1));
+    gui.add(spacing.set("spacing", 128, 5, 1024));
+    gui.add(count.set("count", 5000, 500, 8000));
+    gui.add(yNoise.set("noise", false));
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-    if (prevSpeed != speed || prevSpacing != spacing)
+    if (prevSpeed != speed || prevSpacing != spacing || prevCount != count || prevNoise != yNoise)
     {
         clearScreen();
         prevSpeed = speed;
         prevSpacing = spacing;
+        prevCount = count;
+        prevNoise = yNoise;
     }
 }
 
@@ -43,26 +39,26 @@ void ofApp::update() {
 void ofApp::draw() {
 
     ofSetColor(0);
-    glLineWidth(weight);
+    glLineWidth(1);
 
     //string date = ofGetTimestampString("%y%m%d");
     //ofBeginSaveScreenAsSVG(date + ".svg");
-    for (float frameCount = 0; frameCount < 5000; frameCount++)
+    for (float frameCount = 0; frameCount < count; frameCount++)
     {
         float t = frameCount * speed;
-        float posY = abs(frameCount - 2500) * 0.05;
+        float noiseY = abs(frameCount - 2500) * 0.03;
 
-        lastX = centerX;
-        lastY = centerY;
+        lastX = curPosX;
+        lastY = curPosY;
 
         degree = (t * guldenSnede) * 360;
         
         r = sqrt(t) * spacing;
-        yrad = ofMap(frameCount, 0, 5000, 0.5, 0.2);
-        calculatePoint(width * 0.5, height * 0.5, 1440 - r, fmod(degree, 360), posY);
+        radY = ofMap(frameCount, 0, 5000, 0.5, 0.2);
+        calculatePoint(width * 0.5, height * 0.5, 1440 - r, fmod(degree, 360), yNoise ? noiseY : 0);
 
         if (frameCount != 0)
-            ofLine(lastX, lastY, centerX, centerY);
+            ofLine(lastX, lastY, curPosX, curPosY);
     }
     //ofEndSaveScreenAsSVG();
 
@@ -71,8 +67,8 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::calculatePoint(float x, float y, float r, float graden, float posY) {
-    centerX = x + cos(ofDegToRad(graden)) * (r * 0.5);
-    centerY = y + sin(ofDegToRad(graden)) * (r * yrad);// -posY;
+    curPosX = x + cos(ofDegToRad(graden)) * (r * 0.5);
+    curPosY = y + sin(ofDegToRad(graden)) * (r * radY) + posY;
 }
 
 //--------------------------------------------------------------
