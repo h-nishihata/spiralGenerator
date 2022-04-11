@@ -12,29 +12,17 @@ public:
     void setup();
     void update();
     void draw();
+    void calculatePoint(float x, float y, float r, float graden);
     void clearScreen();
-    void calculatePoint(float x, float y, float r, float graden, float posY);
-
-    void keyPressed(int key);
-    void keyReleased(int key);
-    void mouseMoved(int x, int y);
-    void mouseDragged(int x, int y, int button);
-    void mousePressed(int x, int y, int button);
-    void mouseReleased(int x, int y, int button);
-    void windowResized(int w, int h);
-    void dragEvent(ofDragInfo dragInfo);
-    void gotMessage(ofMessage msg);
 
     ofxPanel gui;
     ofParameter<float> speed;
     ofParameter<float> spacing;
     ofParameter<float> count;
-    ofParameter<bool> yNoise;
-
-    float prevSpeed;
-    float prevSpacing;
-    float prevCount;
-    bool prevNoise;
+    ofParameter<float> noisePos;
+    ofParameter<float> noiseCoef;
+    ofxToggle noise;
+    ofxButton exportAsSvg;
 
     int width;
     int height;
@@ -47,6 +35,8 @@ public:
 
     float lastX;
     float lastY;
+    float posNoise;
+    float t;
 
     float radY = 0.25;
 };
